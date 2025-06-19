@@ -9,17 +9,7 @@ import { Badge } from "@/components/ui/badge"
 import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import {
-  ArrowLeft,
-  HelpCircle,
-  AlertTriangle,
-  Phone,
-  Mail,
-  BookOpen,
-  Users,
-  CheckCircle,
-  MessageSquare,
-} from "lucide-react"
+import { ArrowLeft, HelpCircle, AlertTriangle, Phone, Mail, BookOpen, Users, CheckCircle, MessageSquare } from 'lucide-react'
 import { useRouter } from "next/navigation"
 import { useDemo } from "@/contexts/DemoContext"
 
@@ -138,12 +128,14 @@ export default function OfficerAskQuestionPage() {
                           {categories.map((cat) => {
                             const Icon = cat.icon
                             return (
-                              <SelectItem key={cat.value} value={cat.value} className="text-white">
-                                <div className="flex items-center space-x-2">
-                                  <Icon className="h-4 w-4" />
-                                  <span>{cat.label}</span>
-                                </div>
-                              </SelectItem>
+                              {(
+                                <SelectItem key={cat.value} value={cat.value} className="text-white">
+                                  <>
+                                    <Icon className="h-4 w-4" />
+                                    <span className="ml-2">{cat.label}</span>
+                                  </>
+                                </SelectItem>
+                              )}
                             )
                           })}
                         </SelectContent>
@@ -161,14 +153,16 @@ export default function OfficerAskQuestionPage() {
                         </SelectTrigger>
                         <SelectContent className="bg-slate-700 border-slate-600">
                           {urgencyLevels.map((level) => (
-                            <SelectItem key={level.value} value={level.value} className="text-white">
-                              <div className="flex items-center justify-between w-full">
-                                <span>{level.label}</span>
-                                <Badge variant="secondary" className={level.color}>
-                                  {level.time}
-                                </Badge>
-                              </div>
-                            </SelectItem>
+                            {(
+                              <SelectItem key={level.value} value={level.value} className="text-white">
+                                <>
+                                  <span>{level.label}</span>
+                                  <Badge variant="secondary" className={`${level.color} ml-auto`}>
+                                    {level.time}
+                                  </Badge>
+                                </>
+                              </SelectItem>
+                            )}
                           ))}
                         </SelectContent>
                       </Select>
@@ -197,8 +191,8 @@ export default function OfficerAskQuestionPage() {
                     >
                       {isSubmitting ? (
                         <>
-                          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                          Submitting...
+                          <span className="animate-spin inline-block h-4 w-4 border-b-2 border-white rounded-full mr-2" />
+                          Submitting…
                         </>
                       ) : (
                         <>
