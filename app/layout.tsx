@@ -4,12 +4,14 @@ import { Inter } from "next/font/google"
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
 import { Toaster } from "@/components/ui/toaster"
+import { LanguageProvider } from "@/contexts/LanguageContext"
+import { DemoProvider } from "@/contexts/DemoContext"
 
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "Tamil Nadu Digital Services",
-  description: "AI-Enabled Governance Application for Citizens and Officers",
+  title: "Government Portal - Tamil Nadu",
+  description: "Digital governance platform for citizens and officers",
     generator: 'v0.dev'
 }
 
@@ -19,12 +21,16 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en">
       <body className={inter.className}>
-        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange>
-          {children}
-          <Toaster />
-        </ThemeProvider>
+        <LanguageProvider>
+          <DemoProvider>
+            <ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange>
+              {children}
+              <Toaster />
+            </ThemeProvider>
+          </DemoProvider>
+        </LanguageProvider>
       </body>
     </html>
   )

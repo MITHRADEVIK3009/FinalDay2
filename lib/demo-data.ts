@@ -73,29 +73,57 @@ export const DEMO_NOTIFICATIONS = [
   {
     id: "notif_001",
     user_id: "demo_user_123",
-    title: "Land Certificate Approved",
-    message: "Your land ownership certificate has been approved and is ready for download.",
+    title: "PMAY Application Approved! 🎉",
+    message:
+      "Congratulations! Your Pradhan Mantri Awas Yojana application has been approved. Your subsidy amount of ₹2,50,000 will be credited to your account within 7 working days.",
     type: "success",
     read: false,
-    created_at: "2024-06-18T14:00:00Z",
+    created_at: "2024-06-19T14:30:00Z",
+    action_url: "/citizen/application/app_001",
   },
   {
     id: "notif_002",
     user_id: "demo_user_123",
-    title: "Document verification pending",
-    message: "Please submit additional documents for your SNAP application.",
+    title: "Document Verification Required",
+    message:
+      "Your SNAP application requires additional document verification. Please upload your latest income certificate to proceed with the application.",
     type: "warning",
     read: false,
-    created_at: "2024-06-18T12:30:00Z",
+    created_at: "2024-06-19T12:15:00Z",
+    action_url: "/citizen/upload",
   },
   {
     id: "notif_003",
     user_id: "demo_user_123",
-    title: "New scheme available for farmers",
-    message: "PM-KISAN scheme is now accepting applications in your area.",
+    title: "New Scheme Available: PM-KISAN",
+    message:
+      "A new farmer support scheme PM-KISAN is now available in your area. You may be eligible for ₹6,000 annual support. Check eligibility now.",
+    type: "info",
+    read: false,
+    created_at: "2024-06-19T09:45:00Z",
+    action_url: "/citizen/scheme/scheme_pmkisan",
+  },
+  {
+    id: "notif_004",
+    user_id: "demo_user_123",
+    title: "Medicaid Application Under Review",
+    message:
+      "Your Medicaid health coverage application is currently under review. Expected processing time: 5-7 business days. We'll notify you once a decision is made.",
     type: "info",
     read: true,
-    created_at: "2024-06-17T09:15:00Z",
+    created_at: "2024-06-18T16:20:00Z",
+    action_url: "/citizen/application/app_003",
+  },
+  {
+    id: "notif_005",
+    user_id: "demo_user_123",
+    title: "Voice Assistant Update",
+    message:
+      "Your AI assistant now supports Tamil language! You can now interact with the assistant in Tamil for better assistance with government services.",
+    type: "info",
+    read: true,
+    created_at: "2024-06-18T11:30:00Z",
+    action_url: "/citizen/ai-assistant",
   },
 ]
 
@@ -110,9 +138,9 @@ export const DEMO_SCHEMES = [
     category: "Food Assistance",
     status: "active",
     overview:
-      "Free or low-cost health coverage for low-income individuals, seniors, pregnant women, children, and people with disabilities.",
+      "The Supplemental Nutrition Assistance Program (SNAP) provides nutrition benefits to supplement the food budget of needy families so they can purchase healthy food and move towards self-sufficiency.",
     eligibility:
-      "Based on state-specific income limits, U.S. residency/citizenship; some states offer expansion up to 138% FPL.",
+      "Based on household size and income limits. Must be U.S. citizen or qualified non-citizen, meet work requirements if able-bodied adult without dependents.",
     required_documents: [
       "Proof of identity (driver's license, passport)",
       "Social Security Number",
@@ -132,7 +160,7 @@ export const DEMO_SCHEMES = [
     category: "Healthcare",
     status: "active",
     overview:
-      "Free or low-cost health coverage for low-income individuals, seniors, pregnant women, children, and people with disabilities.",
+      "Medicaid provides free or low-cost health coverage to millions of Americans, including some low-income people, families and children, pregnant women, the elderly, and people with disabilities.",
     eligibility:
       "Based on state-specific income limits, U.S. residency/citizenship; some states offer expansion up to 138% FPL.",
     required_documents: [
@@ -153,8 +181,10 @@ export const DEMO_SCHEMES = [
     department: "HUD",
     category: "Housing",
     status: "active",
-    overview: "Rental assistance program for low-income families, seniors, and disabled individuals.",
-    eligibility: "Income limits, family size, rental history, and clean criminal background required.",
+    overview:
+      "The Housing Choice Voucher Program is the federal government's major program for assisting very low-income families, the elderly, and the disabled to afford decent, safe, and sanitary housing in the private market.",
+    eligibility:
+      "Income limits (generally 50% of median income), family size, rental history, and clean criminal background required.",
     required_documents: ["Income proof", "Family composition (birth certificates)", "Rental and eviction history"],
     portal_url: "https://www.hud.gov/topics/housing_choice_voucher_program_section_8",
     created_at: "2024-01-01T00:00:00Z",
@@ -168,8 +198,10 @@ export const DEMO_SCHEMES = [
     department: "Ministry of Housing",
     category: "Housing",
     status: "active",
-    overview: "Provides housing subsidy to economically weaker sections.",
-    eligibility: "EWS/LIG/MIG categories, first-time home buyers, income criteria as per category.",
+    overview:
+      "Pradhan Mantri Awas Yojana aims to provide affordable housing to the urban poor with a target of building 20 million affordable houses by 2022.",
+    eligibility:
+      "EWS/LIG/MIG categories, first-time home buyers, income criteria as per category, should not own a pucca house.",
     required_documents: [
       "Aadhaar card",
       "Income certificate",
@@ -188,16 +220,18 @@ export const DEMO_SCHEMES = [
     department: "Ministry of Rural Development",
     category: "Employment",
     status: "active",
-    overview: "100 guaranteed days of paid unskilled job work per year for rural households via rights legislation.",
-    eligibility: "Rural residents aged 18+, voluntarily enroll for manual labor.",
+    overview:
+      "The Mahatma Gandhi National Rural Employment Guarantee Act guarantees 100 days of wage employment in a financial year to every household whose adult members volunteer to do unskilled manual work.",
+    eligibility:
+      "Rural residents aged 18+, voluntarily enroll for manual labor, must be willing to work within 5km radius.",
     required_documents: ["Job card from Gram Panchayat", "Aadhaar", "Linked bank account"],
     portal_url: "https://nrega.nic.in/MGNREGA_new/Nrega_home.aspx",
     created_at: "2024-01-01T00:00:00Z",
   },
-  // Add more schemes as needed...
+  // Add more comprehensive schemes...
 ]
 
-// Mock API functions for demo mode
+// Mock API functions for demo mode with realistic delays and responses
 export class DemoApiClient {
   private static instance: DemoApiClient
   private userId: string = DEMO_USER.id
@@ -209,8 +243,9 @@ export class DemoApiClient {
     return DemoApiClient.instance
   }
 
+  // Dashboard stats with real demo data
   async getDashboardStats() {
-    await this.delay(500) // Simulate API delay
+    await this.delay(500)
     return {
       totalApplications: DEMO_APPLICATIONS.length,
       approved: DEMO_APPLICATIONS.filter((app) => app.status === "approved").length,
@@ -220,14 +255,32 @@ export class DemoApiClient {
     }
   }
 
+  // User applications with real demo data
   async getUserApplications() {
     await this.delay(300)
     return DEMO_APPLICATIONS
   }
 
+  // User notifications with real demo data
   async getUserNotifications() {
     await this.delay(200)
     return DEMO_NOTIFICATIONS
+  }
+
+  // Mark notification as read
+  async markNotificationAsRead(notificationId: string) {
+    await this.delay(100)
+    const notification = DEMO_NOTIFICATIONS.find((n) => n.id === notificationId)
+    if (notification) {
+      notification.read = true
+    }
+    return { success: true }
+  }
+
+  // Get unread notification count
+  async getUnreadNotificationCount() {
+    await this.delay(100)
+    return DEMO_NOTIFICATIONS.filter((n) => !n.read).length
   }
 
   async getRecommendedSchemes() {
@@ -268,6 +321,7 @@ export class DemoApiClient {
 
   async logUserAction(action: string, details: any) {
     console.log(`[DEMO] User Action: ${action}`, details)
+    return { success: true }
   }
 
   private delay(ms: number) {

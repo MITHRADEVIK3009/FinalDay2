@@ -9,32 +9,92 @@ import { Badge } from "@/components/ui/badge"
 import { ArrowRight, ArrowLeft, Shield, Smartphone, CreditCard, AlertCircle } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { Alert, AlertDescription } from "@/components/ui/alert"
+import { DEMO_USER } from "@/lib/demo-data"
 
+// ✅ Login component with proper demo user integration
 export function CitizenLogin() {
   const router = useRouter()
-  const [loginMethod, setLoginMethod] = useState<"aadhaar" | "mobile" | "">("")
+  const [loginMethod, setLoginMethod] = useState<"aadhaar" | "mobile" | "demo" | "">("")
   const [aadhaarNumber, setAadhaarNumber] = useState("")
   const [mobileNumber, setMobileNumber] = useState("")
   const [otp, setOtp] = useState("")
   const [otpSent, setOtpSent] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState("")
 
-  const handleSendOTP = async () => {
+  // ✅ Demo login function
+  const handleDemoLogin = () => {
     setIsLoading(true)
-    // Simulate API call
-    setTimeout(() => {
-      setOtpSent(true)
-      setIsLoading(false)
-    }, 2000)
-  }
+    // Set demo user data in localStorage
+    localStorage.setItem("user_data", JSON.stringify(DEMO_USER))
+    localStorage.setItem("demo_mode", "true")
 
-  const handleVerifyOTP = async () => {
-    setIsLoading(true)
-    // Simulate API call
     setTimeout(() => {
       setIsLoading(false)
       router.push("/citizen/dashboard")
-    }, 2000)
+    }, 1000)
+  }
+
+  // ✅ Real OTP sending with proper error handling
+  const handleSendOTP = async () => {
+    setIsLoading(true)
+    setError("")
+
+    try {
+      const endpoint = loginMethod === "aadhaar" ? "/api/auth/request-otp" : "/api/auth/request-otp"
+      const payload =
+        loginMethod === "aadhaar" ? { aadhaar: aadhaarNumber.replace(/\s/g, "") } : { mobile: mobileNumber }
+
+      const response = await fetch(endpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      })
+
+      const data = await response.json()
+
+      if (response.ok) {
+        setOtpSent(true)
+      } else {
+        setError(data.message || "Failed to send OTP")
+      }
+    } catch (err) {
+      setError("Network error. Please try again.")
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  // ✅ Real OTP verification with proper error handling
+  const handleVerifyOTP = async () => {
+    setIsLoading(true)
+    setError("")
+
+    try {
+      const response = await fetch("/api/auth/verify-otp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          [loginMethod === "aadhaar" ? "aadhaar" : "mobile"]:
+            loginMethod === "aadhaar" ? aadhaarNumber.replace(/\s/g, "") : mobileNumber,
+          otp: otp,
+        }),
+      })
+
+      const data = await response.json()
+
+      if (response.ok) {
+        localStorage.setItem("user_data", JSON.stringify(data.user))
+        localStorage.setItem("demo_mode", "false")
+        router.push("/citizen/dashboard")
+      } else {
+        setError(data.message || "Invalid OTP")
+      }
+    } catch (err) {
+      setError("Network error. Please try again.")
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   const formatAadhaar = (value: string) => {
@@ -75,6 +135,13 @@ export function CitizenLogin() {
             <p className="text-slate-300">Choose your preferred authentication method</p>
           </div>
 
+          {error && (
+            <Alert className="border-red-500/50 bg-red-500/10 mb-4">
+              <AlertCircle className="h-4 w-4 text-red-400" />
+              <AlertDescription className="text-red-200">{error}</AlertDescription>
+            </Alert>
+          )}
+
           {!loginMethod && (
             <Card className="bg-slate-800/50 border-slate-700">
               <CardHeader>
@@ -82,6 +149,20 @@ export function CitizenLogin() {
                 <CardDescription className="text-slate-400">Choose how you'd like to authenticate</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
+                {/* ✅ Demo Login Option */}
+                <div
+                  className="p-4 rounded-lg border-2 border-blue-600 bg-blue-500/10 hover:border-blue-500 cursor-pointer transition-all"
+                  onClick={() => setLoginMethod("demo")}
+                >
+                  <div className="flex items-center space-x-3">
+                    <Shield className="h-5 w-5 text-blue-400" />
+                    <div>
+                      <h3 className="font-semibold text-white">Demo Mode</h3>
+                      <p className="text-sm text-blue-300">Try the application with sample data</p>
+                    </div>
+                  </div>
+                </div>
+
                 <div
                   className="p-4 rounded-lg border-2 border-slate-600 hover:border-teal-500 cursor-pointer transition-all"
                   onClick={() => setLoginMethod("aadhaar")}
@@ -111,6 +192,56 @@ export function CitizenLogin() {
             </Card>
           )}
 
+          {/* ✅ Demo Login Card */}
+          {loginMethod === "demo" && (
+            <Card className="bg-slate-800/50 border-slate-700">
+              <CardHeader>
+                <CardTitle className="text-white flex items-center space-x-2">
+                  <Shield className="h-5 w-5 text-blue-400" />
+                  <span>Demo Mode</span>
+                </CardTitle>
+                <CardDescription className="text-slate-400">
+                  Experience the full application with sample data
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <Alert className="border-blue-500/50 bg-blue-500/10">
+                  <AlertCircle className="h-4 w-4 text-blue-400" />
+                  <AlertDescription className="text-blue-200">
+                    Demo mode uses sample data. All features are functional for testing purposes.
+                  </AlertDescription>
+                </Alert>
+
+                <div className="bg-slate-700/30 p-4 rounded-lg">
+                  <h4 className="text-white font-medium mb-2">Demo User Profile:</h4>
+                  <div className="text-sm text-slate-300 space-y-1">
+                    <p>Name: {DEMO_USER.name}</p>
+                    <p>Phone: {DEMO_USER.phone}</p>
+                    <p>Language: {DEMO_USER.preferred_language}</p>
+                  </div>
+                </div>
+
+                <Button
+                  onClick={handleDemoLogin}
+                  disabled={isLoading}
+                  className="w-full bg-blue-500 hover:bg-blue-600 text-white"
+                >
+                  {isLoading ? "Logging in..." : "Continue with Demo"}
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+
+                <Button
+                  variant="ghost"
+                  onClick={() => setLoginMethod("")}
+                  className="w-full text-slate-400 hover:text-white"
+                >
+                  Choose Different Method
+                </Button>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* ✅ Aadhaar Login - Real API Integration */}
           {loginMethod === "aadhaar" && (
             <Card className="bg-slate-800/50 border-slate-700">
               <CardHeader>
@@ -189,6 +320,7 @@ export function CitizenLogin() {
             </Card>
           )}
 
+          {/* ✅ Mobile Login - Real API Integration */}
           {loginMethod === "mobile" && (
             <Card className="bg-slate-800/50 border-slate-700">
               <CardHeader>
