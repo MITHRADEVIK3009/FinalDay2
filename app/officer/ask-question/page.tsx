@@ -135,14 +135,17 @@ export default function OfficerAskQuestionPage() {
                           <SelectValue placeholder="Select a category" />
                         </SelectTrigger>
                         <SelectContent className="bg-slate-700 border-slate-600">
-                          {categories.map((cat) => (
-                            <SelectItem key={cat.value} value={cat.value} className="text-white">
-                              <div className="flex items-center space-x-2">
-                                <cat.icon className="h-4 w-4" />
-                                <span>{cat.label}</span>
-                              </div>
-                            </SelectItem>
-                          ))}
+                          {categories.map((cat) => {
+                            const Icon = cat.icon
+                            return (
+                              <SelectItem key={cat.value} value={cat.value} className="text-white">
+                                <div className="flex items-center space-x-2">
+                                  <Icon className="h-4 w-4" />
+                                  <span>{cat.label}</span>
+                                </div>
+                              </SelectItem>
+                            )
+                          })}
                         </SelectContent>
                       </Select>
                     </div>
