@@ -286,75 +286,81 @@ export function OfficerForum() {
             <TabsContent value="all" className="space-y-4">
               {/* ✅ Discussion Posts */}
               <div className="space-y-4">
-                {filteredPosts.map((post) => (
-                  <Card
-                    key={post.id}
-                    className="bg-slate-800/50 border-slate-700 hover:border-slate-600 transition-colors"
-                  >
-                    <CardContent className="p-6">
-                      <div className="flex items-start justify-between mb-4">
-                        <div className="flex-1">
-                          <div className="flex items-center space-x-2 mb-2">
-                            <Badge variant="secondary" className={getStatusColor(post.status)}>
-                              {getStatusIcon(post.status)}
-                              <span className="ml-1 capitalize">{post.status.replace("-", " ")}</span>
-                            </Badge>
-                            <Badge variant="secondary" className={getPriorityColor(post.priority)}>
-                              {post.priority.toUpperCase()}
-                            </Badge>
-                            <Badge variant="outline" className="border-slate-600 text-slate-400">
-                              {post.category}
-                            </Badge>
-                            {post.isOfficial && (
-                              <Badge variant="secondary" className="bg-blue-500/20 text-blue-400 border-blue-500/30">
-                                <Shield className="h-3 w-3 mr-1" />
-                                Official
+                {filteredPosts.length > 0 ? (
+                  filteredPosts.map((post) => (
+                    <Card
+                      key={post.id}
+                      className="bg-slate-800/50 border-slate-700 hover:border-slate-600 transition-colors"
+                    >
+                      <CardContent className="p-6">
+                        <div className="flex items-start justify-between mb-4">
+                          <div className="flex-1">
+                            <div className="flex items-center space-x-2 mb-2">
+                              <Badge variant="secondary" className={getStatusColor(post.status)}>
+                                {getStatusIcon(post.status)}
+                                <span className="ml-1 capitalize">{post.status.replace("-", " ")}</span>
                               </Badge>
-                            )}
-                          </div>
-                          <h3 className="text-lg font-semibold text-white mb-2 hover:text-orange-400 cursor-pointer">
-                            {post.title}
-                          </h3>
-                          <p className="text-slate-300 text-sm mb-3 line-clamp-2">{post.content}</p>
-                          <div className="flex flex-wrap gap-2 mb-3">
-                            {post.tags.map((tag) => (
-                              <Badge key={tag} variant="secondary" className="bg-slate-700 text-slate-300 text-xs">
-                                #{tag}
+                              <Badge variant="secondary" className={getPriorityColor(post.priority)}>
+                                {post.priority.toUpperCase()}
                               </Badge>
-                            ))}
+                              <Badge variant="outline" className="border-slate-600 text-slate-400">
+                                {post.category}
+                              </Badge>
+                              {post.isOfficial && (
+                                <Badge variant="secondary" className="bg-blue-500/20 text-blue-400 border-blue-500/30">
+                                  <Shield className="h-3 w-3 mr-1" />
+                                  Official
+                                </Badge>
+                              )}
+                            </div>
+                            <h3 className="text-lg font-semibold text-white mb-2 hover:text-orange-400 cursor-pointer">
+                              {post.title}
+                            </h3>
+                            <p className="text-slate-300 text-sm mb-3 line-clamp-2">{post.content}</p>
+                            <div className="flex flex-wrap gap-2 mb-3">
+                              {post.tags.map((tag) => (
+                                <Badge key={tag} variant="secondary" className="bg-slate-700 text-slate-300 text-xs">
+                                  #{tag}
+                                </Badge>
+                              ))}
+                            </div>
                           </div>
                         </div>
-                      </div>
 
-                      <div className="flex items-center justify-between text-sm text-slate-400">
-                        <div className="flex items-center space-x-4">
-                          <span className="font-medium text-slate-300">{post.author}</span>
-                          <span>•</span>
-                          <span>{post.department}</span>
-                          <span>•</span>
-                          <div className="flex items-center space-x-1">
-                            <Clock className="h-3 w-3" />
-                            <span>{post.timestamp}</span>
+                        <div className="flex items-center justify-between text-sm text-slate-400">
+                          <div className="flex items-center space-x-4">
+                            <span className="font-medium text-slate-300">{post.author}</span>
+                            <span>•</span>
+                            <span>{post.department}</span>
+                            <span>•</span>
+                            <div className="flex items-center space-x-1">
+                              <Clock className="h-3 w-3" />
+                              <span>{post.timestamp}</span>
+                            </div>
+                          </div>
+                          <div className="flex items-center space-x-4">
+                            <div className="flex items-center space-x-1">
+                              <MessageCircle className="h-4 w-4" />
+                              <span>{post.replies}</span>
+                            </div>
+                            <div className="flex items-center space-x-1">
+                              <TrendingUp className="h-4 w-4" />
+                              <span>{post.likes}</span>
+                            </div>
+                            <div className="flex items-center space-x-1">
+                              <Users className="h-4 w-4" />
+                              <span>{post.views} views</span>
+                            </div>
                           </div>
                         </div>
-                        <div className="flex items-center space-x-4">
-                          <div className="flex items-center space-x-1">
-                            <MessageCircle className="h-4 w-4" />
-                            <span>{post.replies}</span>
-                          </div>
-                          <div className="flex items-center space-x-1">
-                            <TrendingUp className="h-4 w-4" />
-                            <span>{post.likes}</span>
-                          </div>
-                          <div className="flex items-center space-x-1">
-                            <Users className="h-4 w-4" />
-                            <span>{post.views} views</span>
-                          </div>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
+                      </CardContent>
+                    </Card>
+                  ))
+                ) : (
+                  <div className="bg-white rounded-lg shadow-md p-6">
+                    <p className="text-gray-500">No discussions yet. Start one!</p>
+                  </div>
+                )}
               </div>
             </TabsContent>
 

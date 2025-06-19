@@ -1,5 +1,6 @@
 // ✅ Translation Service using Gemini API
-const GEMINI_API_KEY = process.env.GEMINI_API_KEY || "AIzaSyDNcNjbRK9Rw3W2_F6BHPHIMBEkdgrs7ek"
+const GEMINI_API_KEY =
+  process.env.GEMINI_API_KEY || "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"
 const GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent"
 
 interface TranslationCache {

@@ -1,5 +1,5 @@
 import { type NextRequest, NextResponse } from "next/server"
-import { llamaService } from "@/lib/llama-service"
+import { xaiService } from "@/lib/xai-service"
 
 export async function POST(request: NextRequest) {
   try {
@@ -9,12 +9,12 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ success: false, error: "Message is required" }, { status: 400 })
     }
 
-    const response = await llamaService.chatWithAssistant(message, context, history)
+    const response = await xaiService.chatWithAssistant(message, context, history)
 
     return NextResponse.json({
       success: true,
       data: { response },
-      model: "llama-3-chat",
+      model: "grok-beta",
     })
   } catch (error) {
     console.error("AI Chat error:", error)

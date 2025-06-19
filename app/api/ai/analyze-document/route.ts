@@ -1,23 +1,34 @@
 import { type NextRequest, NextResponse } from "next/server"
-import { llamaService } from "@/lib/llama-service"
+import { z } from "zod"
+// Import XAI service
+import { xaiService } from "@/lib/xai-service"
 
-export async function POST(request: NextRequest) {
+const bodySchema = z.object({
+  documentType: z.string(),
+  content: z.string(),
+  language: z.string().optional(),
+})
+
+export async function POST(req: NextRequest) {
   try {
-    const { documentType, content, language } = await request.json()
+    const body = await req.json()
+    const { documentType, content, language } = bodySchema.parse(body)
 
-    if (!documentType || !content) {
-      return NextResponse.json({ success: false, error: "Document type and content are required" }, { status: 400 })
-    }
+    // Update the analysis function to use real XAI analysis
+    const analysis = await xaiService.analyzeDocument(documentType, content, language || "en")
 
-    const analysis = await llamaService.generateDocumentSummary(documentType, content)
-
+    // Update the response
     return NextResponse.json({
       success: true,
       data: { analysis },
-      model: "llama-3-instruct",
+      model: "grok-beta",
     })
-  } catch (error) {
-    console.error("Document analysis error:", error)
-    return NextResponse.json({ success: false, error: "Failed to analyze document" }, { status: 500 })
+  } catch (e) {
+    if (e instanceof z.ZodError) {
+      return NextResponse.json({ success: false, error: "Invalid body" }, { status: 400 })
+    }
+
+    console.error(e)
+    return NextResponse.json({ success: false, error: "Something went wrong" }, { status: 500 })
   }
 }
