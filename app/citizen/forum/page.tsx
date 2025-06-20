@@ -354,5 +354,5 @@ export default function CommunityForumPage() {
         </div>
       </div>
     </div>
-  )\
+  )
 }
