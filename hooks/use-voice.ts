@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useRef, useCallback } from "react"
-import { callWhisperSTT, convertToTTS } from "@/lib/api-client"
+import { azureSpeechService } from "@/lib/azure-speech-service"
 
 export function useVoice() {
   const [isRecording, setIsRecording] = useState(false)
@@ -22,10 +22,14 @@ export function useVoice() {
 
       mediaRecorder.onstop = async () => {
         const audioBlob = new Blob(chunks, { type: "audio/wav" })
-        const response = await callWhisperSTT(audioBlob)
 
-        if (response.success && response.data) {
-          setTranscript(response.data.text)
+        try {
+          // Use Azure Speech Services for STT
+          const recognizedText = await azureSpeechService.speechToText(audioBlob, "en-US")
+          setTranscript(recognizedText)
+        } catch (error) {
+          console.error("Speech recognition failed:", error)
+          setTranscript("Could not recognize speech. Please try again.")
         }
 
         stream.getTracks().forEach((track) => track.stop())
@@ -46,20 +50,23 @@ export function useVoice() {
     }
   }, [isRecording])
 
-  const speakText = useCallback(async (text: string, language = "en") => {
+  const speakText = useCallback(async (text: string, language = "en-US") => {
     try {
-      const response = await convertToTTS(text, language)
+      // Use Azure Speech Services for TTS
+      const voice = azureSpeechService.getVoiceForLanguage(language)
+      const audioUrl = await azureSpeechService.textToSpeech(text, language, voice)
 
-      if (response.success && response.data) {
-        const audio = new Audio(response.data.audioUrl)
-        audioRef.current = audio
+      const audio = new Audio(audioUrl)
+      audioRef.current = audio
 
-        audio.onplay = () => setIsPlaying(true)
-        audio.onended = () => setIsPlaying(false)
-        audio.onerror = () => setIsPlaying(false)
-
-        await audio.play()
+      audio.onplay = () => setIsPlaying(true)
+      audio.onended = () => {
+        setIsPlaying(false)
+        URL.revokeObjectURL(audioUrl) // Clean up blob URL
       }
+      audio.onerror = () => setIsPlaying(false)
+
+      await audio.play()
     } catch (error) {
       console.error("Failed to speak text:", error)
     }

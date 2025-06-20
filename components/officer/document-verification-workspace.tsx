@@ -62,3 +62,4 @@ const DocumentVerificationWorkspace = () => {
 }
 
 export default DocumentVerificationWorkspace
+export { DocumentVerificationWorkspace }

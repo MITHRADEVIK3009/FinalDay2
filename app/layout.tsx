@@ -6,6 +6,7 @@ import { ThemeProvider } from "@/components/theme-provider"
 import { Toaster } from "@/components/ui/toaster"
 import { LanguageProvider } from "@/contexts/LanguageContext"
 import { DemoProvider } from "@/contexts/DemoContext"
+import "@/lib/i18n"
 
 const inter = Inter({ subsets: ["latin"] })
 

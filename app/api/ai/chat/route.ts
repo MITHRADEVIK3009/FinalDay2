@@ -1,5 +1,5 @@
 import { type NextRequest, NextResponse } from "next/server"
-import { xaiService } from "@/lib/xai-service"
+import { azureOpenAIService } from "@/lib/azure-openai-service"
 
 export async function POST(request: NextRequest) {
   try {
@@ -9,12 +9,12 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ success: false, error: "Message is required" }, { status: 400 })
     }
 
-    const response = await xaiService.chatWithAssistant(message, context, history)
+    const response = await azureOpenAIService.chatWithAssistant(message, context, history)
 
     return NextResponse.json({
       success: true,
       data: { response },
-      model: "grok-beta",
+      model: "azure-openai-gpt-4",
     })
   } catch (error) {
     console.error("AI Chat error:", error)

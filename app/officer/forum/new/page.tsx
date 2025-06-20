@@ -44,7 +44,6 @@ export default function NewOfficerDiscussion() {
     attachments: [] as File[],
   })
 
-  // ✅ Officer Forum Categories
   const categories = [
     { value: "policy-updates", label: "Policy Updates", icon: FileText, color: "text-blue-400" },
     { value: "technical-discussion", label: "Technical Discussion", icon: MessageCircle, color: "text-green-400" },
@@ -65,12 +64,9 @@ export default function NewOfficerDiscussion() {
     e.preventDefault()
     setIsSubmitting(true)
 
-    // ✅ Demo submission simulation
     await new Promise((resolve) => setTimeout(resolve, 2000))
 
     console.log("New Discussion:", formData)
-
-    // ✅ Redirect back to forum
     router.push("/officer/forum")
     setIsSubmitting(false)
   }
@@ -83,7 +79,6 @@ export default function NewOfficerDiscussion() {
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto">
-          {/* ✅ Header */}
           <div className="flex items-center justify-between mb-8">
             <div className="flex items-center space-x-4">
               <Button variant="ghost" onClick={() => router.back()} className="text-slate-400 hover:text-white">
@@ -105,12 +100,9 @@ export default function NewOfficerDiscussion() {
             </div>
           </div>
 
-          {/* ✅ Form */}
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              {/* ✅ Main Form */}
               <div className="lg:col-span-2 space-y-6">
-                {/* ✅ Title */}
                 <Card className="bg-slate-800/50 border-slate-700">
                   <CardHeader>
                     <CardTitle className="text-white">Discussion Title</CardTitle>
@@ -126,7 +118,6 @@ export default function NewOfficerDiscussion() {
                   </CardContent>
                 </Card>
 
-                {/* ✅ Content */}
                 <Card className="bg-slate-800/50 border-slate-700">
                   <CardHeader>
                     <CardTitle className="text-white">Discussion Content</CardTitle>
@@ -142,7 +133,6 @@ export default function NewOfficerDiscussion() {
                   </CardContent>
                 </Card>
 
-                {/* ✅ Tags */}
                 <Card className="bg-slate-800/50 border-slate-700">
                   <CardHeader>
                     <CardTitle className="text-white flex items-center space-x-2">
@@ -164,9 +154,7 @@ export default function NewOfficerDiscussion() {
                 </Card>
               </div>
 
-              {/* ✅ Sidebar */}
               <div className="space-y-6">
-                {/* ✅ Category */}
                 <Card className="bg-slate-800/50 border-slate-700">
                   <CardHeader>
                     <CardTitle className="text-white">Category</CardTitle>
@@ -190,7 +178,6 @@ export default function NewOfficerDiscussion() {
                   </CardContent>
                 </Card>
 
-                {/* ✅ Priority */}
                 <Card className="bg-slate-800/50 border-slate-700">
                   <CardHeader>
                     <CardTitle className="text-white">Priority Level</CardTitle>
@@ -211,7 +198,6 @@ export default function NewOfficerDiscussion() {
                   </CardContent>
                 </Card>
 
-                {/* ✅ Department */}
                 <Card className="bg-slate-800/50 border-slate-700">
                   <CardHeader>
                     <CardTitle className="text-white">Department</CardTitle>
@@ -226,7 +212,6 @@ export default function NewOfficerDiscussion() {
                   </CardContent>
                 </Card>
 
-                {/* ✅ Official Post */}
                 <Card className="bg-slate-800/50 border-slate-700">
                   <CardContent className="pt-6">
                     <div className="flex items-center space-x-2">
@@ -246,7 +231,6 @@ export default function NewOfficerDiscussion() {
                   </CardContent>
                 </Card>
 
-                {/* ✅ Submit Button */}
                 <Button
                   type="submit"
                   disabled={isSubmitting || !formData.title || !formData.content || !formData.category}
@@ -268,7 +252,6 @@ export default function NewOfficerDiscussion() {
             </div>
           </form>
 
-          {/* ✅ Guidelines */}
           <Card className="bg-blue-500/10 border-blue-500/30 mt-8">
             <CardHeader>
               <CardTitle className="text-blue-400 flex items-center space-x-2">

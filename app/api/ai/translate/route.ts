@@ -1,5 +1,5 @@
 import { type NextRequest, NextResponse } from "next/server"
-import { translateWithGemini } from "@/lib/translation-service"
+import { translateWithAzure } from "@/lib/translation-service"
 
 export async function POST(request: NextRequest) {
   try {
@@ -16,18 +16,18 @@ export async function POST(request: NextRequest) {
     let result
     if (batch && Array.isArray(batch)) {
       // Batch translation
-      const translations = await Promise.all(batch.map((item: string) => translateWithGemini(item, targetLanguage)))
+      const translations = await Promise.all(batch.map((item: string) => translateWithAzure(item, targetLanguage)))
       result = { translations }
     } else {
       // Single translation
-      const translation = await translateWithGemini(text, targetLanguage)
+      const translation = await translateWithAzure(text, targetLanguage)
       result = { translation }
     }
 
     return NextResponse.json({
       success: true,
       data: result,
-      model: "gemini-pro",
+      model: "azure-translator",
     })
   } catch (error) {
     console.error("Translation error:", error)

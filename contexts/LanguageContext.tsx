@@ -3,7 +3,7 @@
 import type React from "react"
 import { createContext, useContext, useState, useEffect } from "react"
 import { useTranslation } from "react-i18next"
-import { translateWithGemini } from "@/lib/translation-service"
+import { translateWithAzure } from "@/lib/translation-service"
 
 interface LanguageContextType {
   currentLanguage: string
@@ -71,7 +71,7 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
     if (target === "en") return text
 
     try {
-      return await translateWithGemini(text, target)
+      return await translateWithAzure(text, target)
     } catch (error) {
       console.error("Translation failed:", error)
       return text

@@ -1,7 +1,9 @@
-// ✅ Translation Service using Gemini API
-const GEMINI_API_KEY =
-  process.env.GEMINI_API_KEY || "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"
-const GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent"
+// ✅ Azure Translation Service
+const AZURE_TRANSLATOR_KEY =
+  process.env.AZURE_TRANSLATOR_KEY ||
+  "BHAjEazjrDBcQkKK4snRZMmDw1i2ICM7QGoMjOD34kIsfASnYMgsJQQJ99BFAC3pKaRXJ3w3AAAbACOG5VNv"
+const AZURE_TRANSLATOR_REGION = "eastasia"
+const AZURE_TRANSLATOR_URL = "https://api.cognitive.microsofttranslator.com/translate"
 
 interface TranslationCache {
   [key: string]: string
@@ -34,7 +36,7 @@ class TranslationService {
     return `${targetLang}:${text.substring(0, 100)}`
   }
 
-  async translateWithGemini(text: string, targetLang: string): Promise<string> {
+  async translateWithAzure(text: string, targetLang: string): Promise<string> {
     const cacheKey = this.getCacheKey(text, targetLang)
 
     // Check cache first
@@ -43,43 +45,22 @@ class TranslationService {
     }
 
     try {
-      const languageNames = {
-        ta: "Tamil",
-        hi: "Hindi",
-        te: "Telugu",
-        fr: "French",
-        de: "German",
-        en: "English",
-      }
-
-      const prompt = `Translate the following text to ${languageNames[targetLang as keyof typeof languageNames] || targetLang}. Only return the translated text, no explanations:
-
-${text}`
-
-      const response = await fetch(`${GEMINI_API_URL}?key=${GEMINI_API_KEY}`, {
+      const response = await fetch(`${AZURE_TRANSLATOR_URL}?api-version=3.0&to=${targetLang}`, {
         method: "POST",
         headers: {
+          "Ocp-Apim-Subscription-Key": AZURE_TRANSLATOR_KEY,
+          "Ocp-Apim-Subscription-Region": AZURE_TRANSLATOR_REGION,
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          contents: [
-            {
-              parts: [
-                {
-                  text: prompt,
-                },
-              ],
-            },
-          ],
-        }),
+        body: JSON.stringify([{ Text: text }]),
       })
 
       if (!response.ok) {
-        throw new Error(`Gemini API error: ${response.status}`)
+        throw new Error(`Azure Translator API error: ${response.status}`)
       }
 
       const data = await response.json()
-      const translatedText = data.candidates?.[0]?.content?.parts?.[0]?.text?.trim()
+      const translatedText = data[0]?.translations?.[0]?.text
 
       if (translatedText) {
         // Cache the translation
@@ -88,16 +69,37 @@ ${text}`
         return translatedText
       }
 
-      throw new Error("No translation received from Gemini")
+      throw new Error("No translation received from Azure")
     } catch (error) {
-      console.error("Gemini translation failed:", error)
+      console.error("Azure translation failed:", error)
       return text // Return original text as fallback
     }
   }
 
   async translateBatch(texts: string[], targetLang: string): Promise<string[]> {
-    const translations = await Promise.all(texts.map((text) => this.translateWithGemini(text, targetLang)))
-    return translations
+    try {
+      const requestBody = texts.map((text) => ({ Text: text }))
+
+      const response = await fetch(`${AZURE_TRANSLATOR_URL}?api-version=3.0&to=${targetLang}`, {
+        method: "POST",
+        headers: {
+          "Ocp-Apim-Subscription-Key": AZURE_TRANSLATOR_KEY,
+          "Ocp-Apim-Subscription-Region": AZURE_TRANSLATOR_REGION,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(requestBody),
+      })
+
+      if (!response.ok) {
+        throw new Error(`Azure Translator API error: ${response.status}`)
+      }
+
+      const data = await response.json()
+      return data.map((item: any) => item.translations[0].text)
+    } catch (error) {
+      console.error("Azure batch translation failed:", error)
+      return texts // Return original texts as fallback
+    }
   }
 
   clearCache() {
@@ -109,5 +111,8 @@ ${text}`
 }
 
 export const translationService = new TranslationService()
-export const translateWithGemini = (text: string, targetLang: string) =>
-  translationService.translateWithGemini(text, targetLang)
+export const translateWithAzure = (text: string, targetLang: string) =>
+  translationService.translateWithAzure(text, targetLang)
+
+// Export both for backward compatibility
+export const translateWithGemini = translateWithAzure

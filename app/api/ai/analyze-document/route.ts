@@ -1,34 +1,23 @@
 import { type NextRequest, NextResponse } from "next/server"
-import { z } from "zod"
-// Import XAI service
-import { xaiService } from "@/lib/xai-service"
+import { azureOpenAIService } from "@/lib/azure-openai-service"
 
-const bodySchema = z.object({
-  documentType: z.string(),
-  content: z.string(),
-  language: z.string().optional(),
-})
-
-export async function POST(req: NextRequest) {
+export async function POST(request: NextRequest) {
   try {
-    const body = await req.json()
-    const { documentType, content, language } = bodySchema.parse(body)
+    const { documentType, content, language } = await request.json()
 
-    // Update the analysis function to use real XAI analysis
-    const analysis = await xaiService.analyzeDocument(documentType, content, language || "en")
+    if (!documentType || !content) {
+      return NextResponse.json({ success: false, error: "Document type and content are required" }, { status: 400 })
+    }
 
-    // Update the response
+    const analysis = await azureOpenAIService.analyzeDocument(documentType, content, language)
+
     return NextResponse.json({
       success: true,
       data: { analysis },
-      model: "grok-beta",
+      model: "azure-openai-gpt-4",
     })
-  } catch (e) {
-    if (e instanceof z.ZodError) {
-      return NextResponse.json({ success: false, error: "Invalid body" }, { status: 400 })
-    }
-
-    console.error(e)
-    return NextResponse.json({ success: false, error: "Something went wrong" }, { status: 500 })
+  } catch (error) {
+    console.error("Document analysis error:", error)
+    return NextResponse.json({ success: false, error: "Failed to analyze document" }, { status: 500 })
   }
 }
