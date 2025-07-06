@@ -4,6 +4,7 @@ import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { ArrowRight, ArrowLeft, Volume2, Mic, Eye, Type } from "lucide-react"
 import { useRouter } from "next/navigation"
 
@@ -17,6 +18,11 @@ export function LanguageSetup() {
     { code: "ta", name: "தமிழ்", english: "Tamil" },
     { code: "hi", name: "हिंदी", english: "Hindi" },
     { code: "en", name: "English", english: "English" },
+    { code: "te", name: "తెలుగు", english: "Telugu" },
+    { code: "ar", name: "العربية", english: "Arabic" },
+    { code: "zh", name: "中文", english: "Chinese" },
+    { code: "fr", name: "Français", english: "French" },
+    { code: "de", name: "Deutsch", english: "German" },
   ]
 
   const accessibilityFeatures = [
@@ -74,31 +80,25 @@ export function LanguageSetup() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="grid gap-4">
-                {languages.map((lang) => (
-                  <div
-                    key={lang.code}
-                    className={`p-4 rounded-lg border-2 cursor-pointer transition-all ${
-                      selectedLanguage === lang.code
-                        ? "border-yellow-500 bg-yellow-500/10"
-                        : "border-slate-600 hover:border-slate-500"
-                    }`}
-                    onClick={() => setSelectedLanguage(lang.code)}
-                  >
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <h3 className="text-lg font-semibold text-white">{lang.name}</h3>
-                        <p className="text-sm text-slate-400">{lang.english}</p>
+              <Select value={selectedLanguage} onValueChange={setSelectedLanguage}>
+                <SelectTrigger className="w-full bg-slate-700/50 border-slate-600 text-white">
+                  <SelectValue placeholder="Choose your language" />
+                </SelectTrigger>
+                <SelectContent className="bg-slate-700 border-slate-600">
+                  {languages.map((lang) => (
+                    <SelectItem 
+                      key={lang.code} 
+                      value={lang.code}
+                      className="text-white hover:bg-slate-600 focus:bg-slate-600"
+                    >
+                      <div className="flex items-center space-x-3">
+                        <span className="font-medium">{lang.name}</span>
+                        <span className="text-slate-400 text-sm">({lang.english})</span>
                       </div>
-                      <div
-                        className={`w-4 h-4 rounded-full border-2 ${
-                          selectedLanguage === lang.code ? "border-yellow-500 bg-yellow-500" : "border-slate-500"
-                        }`}
-                      />
-                    </div>
-                  </div>
-                ))}
-              </div>
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </CardContent>
           </Card>
 
